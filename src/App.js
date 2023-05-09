@@ -1,7 +1,8 @@
-import React, { Component } from 'react'
-import CardsList from './CardsList'
-import SearchBox from './SearchBox'
-import './App.css'
+import React, { Component } from 'react';
+import CardsList from './CardsList';
+import SearchBox from './SearchBox';
+import Scroll from './Scroll';
+import './App.css';
 
 class App extends Component {
 	constructor() {
@@ -45,7 +46,9 @@ class App extends Component {
 				{/*State is passed as props to the children components*/}
 					<h1>ROBOFRIENDS</h1>
 					<SearchBox searchChangeFunction={this.onSearchChange}/>
-					<CardsList robots={filteredRobots} />
+					<Scroll>
+						<CardsList robots={filteredRobots} />
+					</Scroll>
 				</div>
 			);
 		}
