@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import CardsList from './CardsList';
-import SearchBox from './SearchBox';
-import Scroll from './Scroll';
+import CardsList from '../components/CardsList';
+import SearchBox from '../components/SearchBox';
+import Scroll from '../components/Scroll';
 import './App.css';
 
 class App extends Component {
@@ -34,14 +34,14 @@ class App extends Component {
 
 	render() {
 		// Runs after the component is constructed
-		const filteredRobots = this.state.robots.filter(robot => {
-				return robot.name.toLowerCase().includes(this.state.searchField.toLowerCase());
+		const { robots,searchField } = this.state;
+		const filteredRobots = robots.filter(robot => {
+				return robot.name.toLowerCase().includes(searchField.toLowerCase());
 			});
-		if (this.state.robots.length === 0) {
+		return !robots.length ?
 			// Our little loading bar for when the robots are loading in.
-			return <h1 className='tc'>Loading your Robofriends, hang on tight!</h1>
-		} else {
-			return (
+			<h1 className='tc'>Loading your Robofriends, hang on tight!</h1> :
+			(
 				<div className="tc">
 				{/*State is passed as props to the children components*/}
 					<h1>ROBOFRIENDS</h1>
@@ -51,9 +51,7 @@ class App extends Component {
 					</Scroll>
 				</div>
 			);
-		}
 	}
-	
 }
 
 export default App;
