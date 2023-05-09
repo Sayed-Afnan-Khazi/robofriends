@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import CardsList from './CardsList'
-import { robots } from './robots'
 import SearchBox from './SearchBox'
 import './App.css'
 
@@ -11,9 +10,18 @@ class App extends Component {
 		// Setting this app's state
 		// State is just a describes what our app looks like
 		this.state = {
-			robots:robots,
+			robots:[],
 			searchField:''
 		}
+	}
+
+	componentDidMount() {
+		// Runs after the component is rendered.
+		// We are using this API to get our users/"robots"
+		// We then update our state. NOTE: Updating the state will cause a re-render. Check the update component lifecyle methods' order of execution.
+		fetch('https://jsonplaceholder.typicode.com/users')
+			.then(response => response.json())
+			.then(users => this.setState({ robots:users }));
 	}
 
 	// React Quirk: Whenever you are creating a method for your component in React,
@@ -24,19 +32,25 @@ class App extends Component {
 	}
 
 	render() {
+		// Runs after the component is constructed
 		const filteredRobots = this.state.robots.filter(robot => {
 				return robot.name.toLowerCase().includes(this.state.searchField.toLowerCase());
 			});
-		return (
-			<div className="tc">
-			{/*State is passed as props to the children components*/}
-				<h1>ROBOFRIENDS</h1>
-				<SearchBox searchChangeFunction={this.onSearchChange}/>
-				<CardsList robots={filteredRobots} />
-			</div>
-		);
+		if (this.state.robots.length === 0) {
+			// Our little loading bar for when the robots are loading in.
+			return <h1 className='tc'>Loading your Robofriends, hang on tight!</h1>
+		} else {
+			return (
+				<div className="tc">
+				{/*State is passed as props to the children components*/}
+					<h1>ROBOFRIENDS</h1>
+					<SearchBox searchChangeFunction={this.onSearchChange}/>
+					<CardsList robots={filteredRobots} />
+				</div>
+			);
+		}
 	}
 	
 }
 
-export default App
+export default App;
