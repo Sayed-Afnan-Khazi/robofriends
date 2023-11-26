@@ -4,7 +4,7 @@ import './index.css';
 import App from './containers/App'
 import 'tachyons';
 
-import { Provider } from 'react-redux';
+import { Provider } from 'react-redux'; // Connect allows react components to be state aware, usually used for "smart" components
 import { createStore } from 'redux';
 
 import { searchRobots } from './reducers';
