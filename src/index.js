@@ -4,12 +4,15 @@ import './index.css';
 import App from './containers/App'
 import 'tachyons';
 
+import { createLogger } from 'redux-logger';
+
 import { Provider } from 'react-redux'; // Connect allows react components to be state aware, usually used for "smart" components
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 
 import { searchRobots } from './reducers';
 
-const store = createStore(searchRobots); // The root reducer is used here
+const logger = createLogger();
+const store = createStore(searchRobots, applyMiddleware(logger)); // The root reducer is used here
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
