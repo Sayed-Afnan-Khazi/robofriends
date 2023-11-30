@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import CardsList from '../components/CardsList';
 import SearchBox from '../components/SearchBox';
 import Scroll from '../components/Scroll';
@@ -6,32 +6,34 @@ import ErrorBoundary from '../components/ErrorBoundary';
 import './App.css';
 
 import { connect } from 'react-redux';
-import { setSearchField } from '../actions';
+import { setSearchField, requestRobots } from '../actions';
 
 const mapStateToProps = state => {
 	// Which props need to listen to the state and get values?
 	return {
-		searchField: state.searchField
+		// searchField: state.searchField
+		// Since we're using a multiple reducers in a root reducer now, we need to specify which reducer we're talking about
+		searchField: state.searchRobots.searchField,
+		robots: state.requestRobots.robots,
+		isPending: state.requestRobots.isPending,
+		error: state.requestRobots.error
 	}
 }
 
 const mapDispatchToProps = dispatch => {
 	// What props should redux listen to that are actions?
 	return {
-		onSearchChange: (event) => dispatch(setSearchField(event.target.value))
+		onSearchChange: (event) => dispatch(setSearchField(event.target.value)),
+		onRequestRobots: () => dispatch(requestRobots())
 	}
 }
 
-function App({onSearchChange, searchField}) {
-
-	const [robots,setRobots] = useState([]);
-	// const [searchField, setSearchField] = useState('');
+function App({onSearchChange, searchField, onRequestRobots, robots, isPending}) {
 
 
 	useEffect(() => {
-		fetch('https://jsonplaceholder.typicode.com/users')
-			.then(response => response.json())
-			.then(users => setRobots(users));
+		onRequestRobots()
+		// eslint-disable-next-line
 	},[]);
 	// Empty dependency array ensures that the effect is only run once (during mounting)
 
@@ -39,7 +41,7 @@ function App({onSearchChange, searchField}) {
 	const filteredRobots = robots.filter(robot => {
 			return robot.name.toLowerCase().includes(searchField.toLowerCase());
 		});
-	return !robots.length ?
+	return isPending ?
 		// Our little loading bar for when the robots are loading in.
 		<h1 className='tc'>Loading your Robofriends, hang on tight!</h1> :
 		(

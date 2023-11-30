@@ -7,12 +7,21 @@ import 'tachyons';
 import { createLogger } from 'redux-logger';
 
 import { Provider } from 'react-redux'; // Connect allows react components to be state aware, usually used for "smart" components
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, combineReducers } from 'redux'; // Need to combine reducers, since we have two reducers now and need to pass a root reducer to createStore()
 
-import { searchRobots } from './reducers';
+import thunkMiddleware from 'redux-thunk';
+
+import { searchRobots, requestRobots } from './reducers';
+
+const rootReducer = combineReducers({ searchRobots, requestRobots })
 
 const logger = createLogger();
-const store = createStore(searchRobots, applyMiddleware(logger)); // The root reducer is used here
+const store = createStore(rootReducer, // The root reducer is used here
+              applyMiddleware(
+              thunkMiddleware,
+              logger
+              )
+              ); 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
